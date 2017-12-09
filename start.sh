@@ -8,6 +8,8 @@ export DEBIAN_FRONTEND=noninteractive
 
 echo "$MASTER_IP $MASTER_HOST" >>/etc/hosts
 
+wget -O - https://packages.icinga.com/icinga.key | apt-key add -
+
 apt-get install -y icinga2 monitoring-plugins monitoring-plugins-basic monitoring-plugins-common monitoring-plugins-standard snmp
 apt-get clean
 rm -rf /var/lib/apt/lists/*

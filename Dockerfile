@@ -4,7 +4,7 @@ MAINTAINER Jere Virta
 
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
-    && apt-get install -yq -no-install-recommends \
+    && apt-get install -yq --no-install-recommends \
     wget \
     nano \
     lsb-release \
