@@ -6,8 +6,8 @@ pki_dir="/etc/icinga2/pki"
 
 export DEBIAN_FRONTEND=noninteractive
 
-wget -O - http://debmon.org/debmon/repo.key 2>/dev/null | apt-key add -
-apt-get update
+echo "$MASTER_IP $MASTER_HOST" >>/etc/hosts
+
 apt-get install -y icinga2 monitoring-plugins monitoring-plugins-basic monitoring-plugins-common monitoring-plugins-standard snmp
 apt-get clean
 rm -rf /var/lib/apt/lists/*
@@ -21,7 +21,8 @@ mkdir /run/icinga2 -p
 
 
 chown nagios.nagios /etc/icinga2 -R
-chown nagios.nagios /run/icinga2
+chown nagios.nagios /run/icinga2 -R
+
 
 rm -rf /etc/icinga2/conf.d/*
 
@@ -35,6 +36,7 @@ echo "icinga2 pki save-cert --key $pki_dir/$client_host.key --cert $pki_dir/$cli
 echo "icinga2 node setup --ticket $icinga_ticket --zone $client_host --master_host $master_host  --trustedcert  $pki_dir/trusted-cert.crt  --cn $client_host  --endpoint $master_host,$master_ip,5665 --accept-commands --accept-config"  >>/icingaconfig.sh
 
 sed -i '$ i object Zone "global-templates" { global = true }' /etc/icinga2/zones.conf
+sed -i '$ i object Zone "director-global" { global = true }' /etc/icinga2/zones.conf
 
 chmod u+s,g+s /bin/ping 
 chmod u+s,g+s /bin/ping6 
@@ -46,4 +48,3 @@ date >>/timestamp
 
 icinga2 daemon 
 
-wait
